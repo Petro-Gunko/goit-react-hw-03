@@ -10,7 +10,7 @@ export default function App() {
     const savedContacts = localStorage.getItem("contacts");
     return savedContacts ? JSON.parse(savedContacts) : contactsData;
   });
-
+  const [filter, setFilter] = useState("");
   useEffect(() => {
     localStorage.setItem("contacts", JSON.stringify(contacts));
   }, [contacts]);
@@ -25,20 +25,16 @@ export default function App() {
     );
   };
 
-  const handleSearch = (event) => {
-    const searchName = event.target.value.toLowerCase();
-    const filteredContacts = contactsData.filter((contact) =>
-      contact.name.toLowerCase().includes(searchName)
-    );
-    setContacts(filteredContacts);
-  };
+  const visibleContacts = contacts.filter((contact) =>
+    contact.name.toLowerCase().includes(filter.toLowerCase())
+  );
 
   return (
     <div>
       <h1>Phonebook</h1>
       <ContactForm onAdd={addContact} />
-      <SearchBox find={handleSearch} />
-      <ContactList contacts={contacts} onDelete={deleteContact} />
+      <SearchBox value={filter} onFilter={setFilter} />
+      <ContactList contacts={visibleContacts} onDelete={deleteContact} />
     </div>
   );
 }
